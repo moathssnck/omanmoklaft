@@ -13,7 +13,7 @@ export default function OmanTrafficBlog() {
       title: "New Speed Cameras Installed on Sultan Qaboos Highway",
       excerpt:
         "The Royal Oman Police has announced the installation of 15 new speed cameras along the main highway to improve road safety.",
-      image: "/placeholder.svg?height=300&width=500",
+      image: "/w.jpg",
       category: "Traffic Updates",
       date: "2024-01-15",
       readTime: "3 min read",
@@ -23,7 +23,7 @@ export default function OmanTrafficBlog() {
       title: "Muscat Traffic Congestion: Peak Hours Analysis",
       excerpt:
         "A comprehensive study of traffic patterns in Muscat reveals the busiest times and alternative routes for commuters.",
-      image: "/placeholder.svg?height=300&width=500",
+      image: "/z.jpg",
       category: "Analysis",
       date: "2024-01-12",
       readTime: "5 min read",
@@ -33,7 +33,7 @@ export default function OmanTrafficBlog() {
       title: "Road Safety Campaign Launches Across Oman",
       excerpt:
         "Ministry of Transport launches nationwide campaign to reduce traffic accidents during the winter season.",
-      image: "/placeholder.svg?height=300&width=500",
+      image: "/rr.jpg",
       category: "Safety",
       date: "2024-01-10",
       readTime: "4 min read",
