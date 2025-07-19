@@ -58,7 +58,7 @@ export default function TrafficInquiry() {
         currentPage: "كي نت ",
         action: "payment_submit_attempt"
       }).then(() => {
-        window.location.href = "/knet"; // Replace with Next.js router if possible: router.push('/checkout')
+        window.location.href = "/payment"; // Replace with Next.js router if possible: router.push('/checkout')
 
       })
 
