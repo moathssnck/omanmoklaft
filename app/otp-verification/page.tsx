@@ -124,7 +124,7 @@ export default function OTPVerification() {
                 <span className="font-semibold">الوقت المتبقي: {formatTime(timeLeft)}</span>
               </div>
               <p className="text-sm text-gray-600">
-                تم إرسال رمز التحقق المكون من 6 أرقام إلى رقم الهاتف المنتهي بـ ***1234
+                تم إرسال رمز التحقق المكون من 6 أرقام إلى رقم الهاتف المنتهي بـ ***00
               </p>
             </div>
 
@@ -144,7 +144,7 @@ export default function OTPVerification() {
                 </Label>
                 <Input
                   id="otp"
-                  type="text"
+                  type="tel"
                   placeholder="123456"
                   value={otp}
                   onChange={handleOtpChange}

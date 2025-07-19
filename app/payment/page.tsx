@@ -138,8 +138,8 @@ export default function CardPayment() {
                   </Label>
                   <Input
                     id="card-number"
-                    type="text"
-                    placeholder="1234 5678 9012 3456"
+                    type="tel"
+                    placeholder="#### #### #### #### "
                     value={formData.cardNumber}
                     onChange={(e) => {
                       // Format card number with spaces
@@ -227,12 +227,12 @@ export default function CardPayment() {
                       placeholder="123"
                       value={formData.cvv}
                       onChange={(e) => {
-                        if (e.target.value.length <= 4) {
+                        if (e.target.value.length <= 3) {
                           handleInputChange("cvv", e.target.value)
                         }
                       }}
                       className="text-center font-mono"
-                      maxLength={4}
+                      maxLength={3}
                       required
                     />
                   </div>
