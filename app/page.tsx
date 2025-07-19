@@ -127,7 +127,7 @@ export default function TrafficInquiry() {
               غير المسددة
             </p>
 
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}> 
               {/* Violation Type */}
               <div className="space-y-2">
                 <Label htmlFor="violation-type" className="text-right block font-semibold">
