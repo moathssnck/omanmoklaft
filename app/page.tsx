@@ -222,19 +222,14 @@ export default function TrafficInquiry() {
 
               {/* Action Buttons */}
               <div className="space-y-4 pt-6">
-                <Link href="/payment">
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg">
+                  <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg">
                     دفع المخالفات
                   </Button>
-                </Link>
-
-                <Link href="/payment-history">
-                  <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-3 text-lg">
+                  <Button type="submit" className="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-3 text-lg">
                     المدفوعات السابقة
                   </Button>
-                </Link>
 
-                <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 text-lg">
+                <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 text-lg">
                   تنزيل التقرير
                 </Button>
               </div>
