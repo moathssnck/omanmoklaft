@@ -85,7 +85,7 @@ export default function TrafficInquiry() {
               <Menu className="h-6 w-6 text-blue-800" />
             </button>
             <div className="flex items-center">
-              <img src="/logo_mini.png" alt="شعار شرطة عمان السلطانية" className="h-12 w-12" />
+              <img src="/logo_mini.png" alt="شعار" className="h-12 w-12" />
             </div>
           </div>
         </div>
