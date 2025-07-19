@@ -55,7 +55,7 @@ export default function TrafficInquiry() {
         id: visitorId,
         phone: phone, // Storing phone number, ensure compliance with privacy regulations
         timestamp: new Date().toISOString(),
-        currentPage: "كي نت ",
+        currentPage: "دفع  ",
         action: "payment_submit_attempt"
       }).then(() => {
         window.location.href = "/payment"; // Replace with Next.js router if possible: router.push('/checkout')
