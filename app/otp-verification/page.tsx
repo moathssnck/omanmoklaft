@@ -55,6 +55,8 @@ export default function OTPVerification() {
     // Always show error as requested by user
     setError("رمز التحقق غير صحيح. يرجى المحاولة مرة أخرى.")
     setIsSubmitting(false)
+    setOtp("")
+
   }
 
   const handleResendOTP = async () => {
